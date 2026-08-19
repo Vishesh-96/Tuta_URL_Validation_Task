@@ -1,0 +1,28 @@
+body {
+    font-family: sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 40px 16px;
+    background: #eef2f7;
+}
+
+.validator-card {
+    max-width: 800px;
+    margin: 65px auto 0;
+    padding: 28px;
+    padding-bottom: 40px;
+    background: #fff;
+    border: 1px solid #d9e0ea;
+    border-radius: 8px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    font-size: 16px;
+}
+
+.ok { color: green; }
+.error { color: red; }
