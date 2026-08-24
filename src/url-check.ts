@@ -1,5 +1,5 @@
-import { Observable, from, of } from "rxjs";
-import { map, debounceTime, distinctUntilChanged, switchMap, startWith, catchError } from "rxjs/operators";
+import { Observable, from, of, timer } from "rxjs";
+import { map, distinctUntilChanged, switchMap, startWith, catchError } from "rxjs/operators";
 import { fetchUrlInfo } from "./mock-server";
 import { isValidUrlFormat } from "./url-validation";
 
@@ -15,17 +15,16 @@ const SERVER_ERROR: UrlStatus = { text: "Could not reach the server, please try 
 
 const TYPING_PAUSE_MS = 300;
 
-// Checks if the provided URL exists and is valid
 export function createUrlStatus$(typedText$: Observable<string>): Observable<UrlStatus> {
     return typedText$.pipe(
         map((text) => text.trim()),
-        debounceTime(TYPING_PAUSE_MS), // wait until the user stops typing and then emits the value
         distinctUntilChanged(), // skip if the value is identical as the last value
         switchMap((url) => { // cancel the old request and keeps only the latest one
             if (url === "") return of(EMPTY_INPUT);
             if (!isValidUrlFormat(url)) return of(INVALID_FORMAT);
 
-            return from(fetchUrlInfo(url)).pipe(
+            return timer(TYPING_PAUSE_MS).pipe(
+                switchMap(() => from(fetchUrlInfo(url))),
                 map((result): UrlStatus =>
                     result.exists
                         ? { text: `URL exists (${result.resourceType})`, className: "ok" }
